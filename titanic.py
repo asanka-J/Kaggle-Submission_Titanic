@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 TITANIC-KAGGLE
-
-Created on Thu Sep  7 08:30:56 2017
-
+  Created on Thu Sep  7 08:30:56 2017
 @author: Asanka
 """
 
@@ -15,13 +13,29 @@ warnings.filterwarnings('ignore')
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
+sns.set_style('whitegrid')
 
 # Importing the dataset
 dataset = pd.read_csv('train.csv')
-#dataset.describe()
+
+dataset.info()
+print("*"*40)
+
+
+#descriptive statistics
+#distribution of numerical feature values across the samples
+dataset.describe()
+print("*"*40)
+
+list(dataset) #get column namess 
+
+#get details about catagorical variables
+dataset.describe(include=['O'])
+
+#Select the columns to use in the model 
 dataset = dataset.iloc[:,[0,1,2,4,5,9]]
 
-#list(dataset) #get column namess 
 
 #X must be a data set to view this 
 print(dataset['PassengerId'].isnull().sum())
@@ -39,14 +53,30 @@ dataset.iloc[:,4:5]= imputer.transform(dataset.iloc[:,4:5].values)
 
 
 # Encoding categorical data
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
 labelencoder_X = LabelEncoder()
 dataset.iloc[:,3:4] = labelencoder_X.fit_transform(dataset.iloc[:,3:4].values)
-
 
 X = dataset.iloc[:,[0,2,3,4,5]].values
 y = dataset.iloc[:,1].values
 
+
+#observe how survival reflects with the variables
+#No survivours vs Age 
+gan = sns.FacetGrid(dataset, col='Survived')
+gan.map(plt.hist, 'Age', bins=10)
+
+#No survivours vs Age and class
+grid = sns.FacetGrid(dataset, col='Survived', row='Pclass', size=2.2, aspect=1.6)
+grid.map(plt.hist, 'Age', alpha=.5, bins=20)
+grid.add_legend();
+
+
+list(dataset)
+#No survivours vs Sex 
+
+gan = sns.FacetGrid(dataset, col='Survived')
+gan.map(plt.hist, 'Sex', bins=10)
 
 
 # Splitting the dataset into the Training set and Test set
