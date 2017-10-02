@@ -73,7 +73,8 @@ grid.add_legend();
 
 
 list(dataset)
-#No survivours vs Sex 
+
+#No survivors vs Sex 
 
 gan = sns.FacetGrid(dataset, col='Survived')
 gan.map(plt.hist, 'Sex', bins=10)
@@ -89,7 +90,6 @@ from sklearn.ensemble import RandomForestRegressor
 Regressor = RandomForestRegressor(n_estimators = 100,oob_score=True, random_state = 0)
 Regressor.fit(X_train, y_train)
 
-Regressor.oob_score_ # R**2 value
 
 # Check the importance of variables
 Regressor.feature_importances_
@@ -100,6 +100,36 @@ F_importance.plot(kind="barh" , figsize=(7,6))
 
  #Fitting Random Forest Classification to the Training set
 from sklearn.ensemble import RandomForestClassifier
-classifier = RandomForestClassifier(n_estimators = 100, criterion = 'entropy', random_state = 0)
+classifier = RandomForestClassifier(n_estimators =195, criterion = 'entropy', random_state = 0)
 classifier.fit(X_train, y_train)
 
+y_pred = classifier.predict(X_test)
+
+
+# Making the Confusion Matrix
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+
+
+#grid search hyper parameter tuning
+"""
+# Applying k-Fold Cross Validation
+from sklearn.model_selection import cross_val_score
+accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
+accuracies.mean()
+accuracies.std()
+
+# Applying Grid Search to find the best model and the best parameters
+from sklearn.model_selection import GridSearchCV
+parameters = [{'n_estimators': [195,196,197]}]
+grid_search = GridSearchCV(estimator = classifier,
+                           param_grid = parameters,
+                           scoring = 'accuracy',
+                           cv = 10,
+                           n_jobs = -1)
+grid_search = grid_search.fit(X_train, y_train)
+best_accuracy = grid_search.best_score_
+best_parameters = grid_search.best_params_
+
+got accuracy of 0.830212234707for n_estimator=195
+"""
